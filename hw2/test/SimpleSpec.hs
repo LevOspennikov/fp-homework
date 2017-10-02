@@ -12,7 +12,7 @@ spec = do
         removeAt 2 "abc" `shouldBe` "ab"
 
     it "collectEvery" $ do
-        collectEvery 3 [1..8] `shouldBe` ([1,2,4,5,7,8], [3,6])
+        collectEvery 3 [1..9] `shouldBe` ([1,2,4,5,7,8], [3,6,9])
 
     it "stringSum" $ do
         stringSum "1 1" `shouldBe` 2

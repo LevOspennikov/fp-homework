@@ -8,6 +8,7 @@ module Lib
       foldrTree,
       Sum,
       wow,
+      sad,
       foldMapTree,
       splitOn
     ) where
@@ -15,27 +16,31 @@ module Lib
 data Tree a = Leaf | Node a (Tree a) (Tree a)
                 deriving(Show)
 
+instance Foldable Tree where
+    foldr f z = foldrTree f z
+    foldMap f m = foldMapTree f m
+
 empty :: (Ord a) => Tree a -> Bool
 empty Leaf = True
 empty  _   = False
 
 sizeTree :: Tree a -> Integer
 sizeTree Leaf           = 0
-sizeTree (Node v t1 t2) = 1 + sizeTree t1 + sizeTree t2
+sizeTree (Node _ t1 t2) = 1 + sizeTree t1 + sizeTree t2
 
 contains :: (Ord a) => Tree a -> a -> Bool
 contains Leaf _ = False
 contains (Node v t1 t2) x
     | x == v = True
-    | x  < v = contains t1 x
-    | x  > v = contains t2 x
+    | x < v = contains t1 x
+    | x > v = contains t2 x
 
 insert :: (Ord a) => Tree a -> a -> Tree a
 insert Leaf x = Node x Leaf Leaf
 insert (Node v t1 t2) x
     | v == x = Node v t1 t2
-    | v > x = Node v t1 (insert t2 x)
-    | v < x = Node v (insert t1 x) t2
+    | x < v = Node v (insert t1 x) t2
+    | x > v = Node v t1 (insert t2 x)
 
 fromList ::  (Ord a) => [a] -> Tree a
 fromList []     = Leaf
@@ -56,10 +61,14 @@ instance Num n => Monoid (Sum n) where
 wow :: Int -> Sum Int
 wow t = Sum t
 
+sad :: Sum Int -> Int
+sad (Sum x) = x
+
 foldMapTree :: Monoid m => (a -> m) -> Tree a -> m
-foldMapTree fn Leaf           = mempty
+foldMapTree _ Leaf           = mempty
 foldMapTree fn (Node v t1 t2) = mconcat [fn v, foldMapTree fn t1, foldMapTree fn t2]
 
+splitOn :: (Eq a, Foldable t) => a -> t a -> [[a]]
 splitOn sym = foldr (\c (x:xs) ->
     if c == sym
     then []:x:xs

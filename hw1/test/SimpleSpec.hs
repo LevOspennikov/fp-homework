@@ -17,6 +17,7 @@ spec = do
         highestBit 17 `shouldBe` (16, 4)
 
     it "smartReplicate" $ do
-         smartReplicate [1,2,3] `shouldBe` [1,2,2,3,3,3]
+        smartReplicate [1,2,3] `shouldBe` [1,2,2,3,3,3]
 
-
+    it "contains" $ do
+        contains 3 [[1..5], [2,0], [3,4]] `shouldBe` [[1,2,3,4,5],[3,4]]

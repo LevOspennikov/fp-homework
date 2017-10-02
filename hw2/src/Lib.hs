@@ -14,13 +14,11 @@ removeAt n (x:xs) = x : removeAt (n-1) xs
 
 collectEvery :: Int -> [a] -> ([a], [a])
 collectEvery n list | length list < (n - 1) = (list, [])
-
 collectEvery n list = (x1 ++ x, y1:y)
                      where
                          (x1, tail_list) = splitAt (n - 1) list
                          y1 = list !! (n - 1)
-                         (fst, second) = splitAt n list
-                         (x, y) = collectEvery n (second)
+                         (x, y) = collectEvery n (tail tail_list)
 
 
 stringSum :: String -> Int

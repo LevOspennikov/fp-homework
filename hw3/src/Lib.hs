@@ -5,6 +5,8 @@ module Lib
       afterDays,
       isWeekend,
       daysToParty,
+      toVec2d,
+      toVec3d,
       vecTo3D,
       vecAdd,
       vecCrossProd,
@@ -56,6 +58,12 @@ daysToParty weekDay
 
 data Vector a = Vector2D a a | Vector3D a a a
 
+toVec2d :: a -> a -> Vector a
+toVec2d = Vector2D
+
+toVec3d :: a -> a -> a -> Vector a
+toVec3d = Vector3D
+
 packVector :: Vector a -> [a]
 packVector (Vector2D x y)   = [x, y]
 packVector (Vector3D x y z) = [x, y, z]
@@ -86,11 +94,8 @@ vecLen :: Vector Double -> Double
 vecLen = sqrt . sum . map (^ 2) . packVector
 
 vecDotProd :: Vector Double -> Vector Double -> Vector Double
-vecDotProd a b = Vector3D (y1 * z2 - y2 * z1) (z1 * x2 - z2 * x1) (x1 * y2 - x2 * y1)
-    where
-        (Vector3D x1 y1 z1) = vecTo3D a
-        (Vector3D x2 y2 z2) = vecTo3D b
-
+vecDotProd a b = vecDtProd (vecTo3D a) (vecTo3D b)
+    where vecDtProd (Vector3D x1 y1 z1) (Vector3D x2 y2 z2) = Vector3D (y1 * z2 - y2 * z1) (z1 * x2 - z2 * x1) (x1 * y2 - x2 * y1)
 
 data Nat = Z | S Nat
 
@@ -121,24 +126,24 @@ intToNat x
         | x > 0 = S (intToNat (x - 1))
         | otherwise = error "Negative number"
 
-eqNuts :: Nat -> Nat -> Bool
-eqNuts Z Z          = True
-eqNuts Z (S _)      = False
-eqNuts (S _) Z      = False
-eqNuts (S xs) (S y) = eqNuts xs y
+eqNats :: Nat -> Nat -> Bool
+eqNats Z Z          = True
+eqNats Z (S _)      = False
+eqNats (S _) Z      = False
+eqNats (S xs) (S y) = eqNats xs y
 
-gtNuts :: Nat -> Nat -> Bool
-gtNuts Z Z          = True
-gtNuts Z (S _)      = False
-gtNuts (S _) Z      = True
-gtNuts (S xs) (S y) = eqNuts xs y
+gtNats :: Nat -> Nat -> Bool
+gtNats Z Z          = True
+gtNats Z (S _)      = False
+gtNats (S _) Z      = True
+gtNats (S xs) (S y) = eqNats xs y
 
 instance Eq Nat where
-    x == y = eqNuts x y
+    x == y = eqNats x y
 
 instance Ord Nat where
-    x > y = gtNuts x y
-    x <= y = (||) (gtNuts y x)  (eqNuts x y)
+    x > y = gtNats x y
+    x <= y = (||) (gtNats y x)  (eqNats x y)
 
 instance Num Nat where
     x + y = addTwoNats x y
