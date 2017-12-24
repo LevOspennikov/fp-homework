@@ -33,7 +33,7 @@ instance Functor Parser where
   fmap :: (a -> b) -> Parser a -> Parser b
   fmap f p = Parser m
     where
-      m s = first f <$> (runParser p s)
+      m s = first f <$> runParser p s
 
 
 first :: (a -> b) -> (a, c) -> (b, c)
@@ -41,7 +41,7 @@ first f (x, y) = (f x, y)
 
 instance Applicative Parser where
   pure :: a -> Parser a
-  pure x = Parser (\_ -> Just (x,[]))
+  pure x = Parser (\s -> Just (x,s))
 
   (<*>) :: Parser (a -> b) -> Parser a -> Parser b
   (<*>) p secondP = Parser m

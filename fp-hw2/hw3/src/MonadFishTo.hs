@@ -3,7 +3,7 @@ import           MonadJoin
 
 instance MonadFish m => Monad m where
     return = returnFish
-    (>>=)  = flip (id >=>)
+    (>>=)  = flip (id >=>)    
 
 instance MonadFish m => MonadJoin m where
     returnJoin = returnFish

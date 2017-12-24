@@ -9,7 +9,7 @@ module Lib
        ) where
 
 
-import           Control.Applicative
+import           Control.App1licative
 import           Control.Category
 import           Control.Monad
 import           Data.Maybe
@@ -70,7 +70,12 @@ instance Category (~>) where
  id :: a ~> a
  id = Partial (\x -> Just x)
 (.) :: b ~> c -> a ~> b -> a ~> c
-(.) first second = Partial (\x -> (apply second x) >>= (apply first))
+(.) first second = Partial (\x -> apply second x >>= apply first)
 
 -- identity:      id . f ≡ f . id ≡ f
 -- Partal (\x -> Just x) . f ≡ f . Partal (\x -> Just x) ≡ f
+
+-- associativity: f . (g . h) ≡ (f . g) . h
+-- f . Partial (\x -> (apply h x) >>= (apply g)) ≡ ( Partial (\x -> (apply g x) >>= (apply f))) . h
+-- Partial (\y -> (apply ( Partial (\x -> (apply h x) >>= (apply g))) y) >>= (apply f))  ≡
+--  ≡  Partial (\y -> (apply h y) >>= (apply ( Partial (\x -> (apply g x) >>= (apply f)))))
